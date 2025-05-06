@@ -36,4 +36,11 @@ const adminModel = Schema.model("admin", Admin);
 
 const contentModel = Schema.model("content", Content);
 
-const puchaseModel = Schema.model("purchase", Purchase);
+const purchaseModel = Schema.model("purchase", Purchase);
+
+module.exports = {
+  userModel,
+  adminModel,
+  contentModel,
+  purchaseModel,
+};
