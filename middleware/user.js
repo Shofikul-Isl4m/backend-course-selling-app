@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
+const { JWT_USER_PASSWORD } = require("../config");
 
 function adminmiddleware(req, res, next) {
   const token = req.header.token;
-  const decoded = jwt.verify(token, "riaz");
+  const decoded = jwt.verify(token, JWT_USER_PASSWORD);
 
   if (!decoded || !decoded.id) {
     req.userId = decoded.id;

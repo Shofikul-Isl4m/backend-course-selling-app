@@ -4,6 +4,7 @@ const { userModel } = require("../db");
 const bcrypt = require("bcrypt");
 const z = require("zod");
 const Jwt = require("jsonwebtoken");
+const { JWT_USER_PASSWORD } = require("../config");
 
 userRouter.post("/signup", async function () {
   const signupSchema = z.object({
@@ -67,7 +68,7 @@ userRouter.post("/signin", async function () {
     {
       id: user._id,
     },
-    "riaz"
+    JWT_USER_PASSWORD
   );
 
   res.json({

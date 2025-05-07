@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const z = require("zod");
 const Jwt = require("jsonwebtoken");
 const { adminmiddleware } = require("../middleware/admin");
+const { JWT_ADMIN_PASSWORD } = require("../config");
 
 adminRouter.post("/signup", async function (req, res) {
   const signupSchema = z.object({
@@ -76,7 +77,7 @@ adminRouter.post("/signin", async function () {
     {
       id: user._id,
     },
-    "riazadmin"
+    JWT_ADMIN_PASSWORD
   );
 
   res.json({
@@ -121,5 +122,18 @@ adminRouter.put("/course", adminmiddleware, async function (req, res) {
 
   res.json({
     message: "course updated",
+    courseId: course._id,
+  });
+});
+
+adminRouter.get("/course/bulk", adminmiddleware, async function (req, res) {
+  const adminId = req.id;
+  const courses = await contentModel.find({
+    creatorId: adminId,
+  });
+
+  res.json({
+    courses,
+    message: "courses",
   });
 });
