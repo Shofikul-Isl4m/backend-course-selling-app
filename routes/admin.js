@@ -16,7 +16,7 @@ adminRouter.post("/signup", async function (req, res) {
   });
   const result = signupSchema.safeParse(req.body);
   if (!result.success) {
-    res.status(400).json({
+    return res.status(400).json({
       messege: "invalid credentials",
       error: result.error,
     });
@@ -25,7 +25,7 @@ adminRouter.post("/signup", async function (req, res) {
   try {
     const existingUser = await adminModel.findOne({ email });
     if (existingUser) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "user already exist",
       });
     }
@@ -45,10 +45,10 @@ adminRouter.post("/signup", async function (req, res) {
     });
   }
 });
-adminRouter.post("/signin", async function () {
+adminRouter.post("/signin", async function (req, res) {
   const signinSchema = z.object({
-    email: z.string,
-    password: z.string,
+    email: z.string(),
+    password: z.string(),
   });
   const result = signinSchema.safeParse(req.body);
 
@@ -57,7 +57,7 @@ adminRouter.post("/signin", async function () {
   }
 
   const { email, password } = result.data;
-  const user = await userModel.find({
+  const user = await adminModel.findOne({
     email,
   });
   if (!user) {
@@ -88,12 +88,12 @@ adminRouter.post("/signin", async function () {
 adminRouter.post("/course", adminmiddleware, async function (req, res) {
   const adminId = req.id;
 
-  const { title, discription, imageurl, price, creatorId } = req.body;
+  const { title, discription, imageUrl, price } = req.body;
 
   const course = await contentModel.create({
     title,
     discription,
-    imageurl,
+    imageUrl,
     price,
     creatorId: adminId,
   });
@@ -137,3 +137,7 @@ adminRouter.get("/course/bulk", adminmiddleware, async function (req, res) {
     message: "courses",
   });
 });
+
+module.exports = {
+  adminRouter: adminRouter,
+};

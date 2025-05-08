@@ -1,12 +1,13 @@
 const { Router } = require("express");
 const userRouter = Router();
-const { userModel } = require("../db");
+const { userModel, contentModel } = require("../db");
 const bcrypt = require("bcrypt");
 const z = require("zod");
 const Jwt = require("jsonwebtoken");
 const { JWT_USER_PASSWORD } = require("../config");
+const { usermiddleware } = require("../middleware/user");
 
-userRouter.post("/signup", async function () {
+userRouter.post("/signup", async function (req, res) {
   const signupSchema = z.object({
     email: z.string(),
     password: z.string(),
@@ -36,19 +37,19 @@ userRouter.post("/signup", async function () {
     messsage: "signup succesful",
   });
 });
-userRouter.post("/signin", async function () {
+userRouter.post("/signin", async function (req, res) {
   const signinSchema = z.object({
-    email: z.string,
-    password: z.string,
+    email: z.string(),
+    password: z.string(),
   });
-  const result = signinSchema.safeParse(body);
+  const result = signinSchema.safeParse(req.body);
 
   if (!result.success) {
-    res.status;
+    res.status(400).json({ message: "Invalid Credentials" });
   }
 
   const { email, password } = result.data;
-  const user = await userModel.find({
+  const user = await userModel.findOne({
     email,
   });
   if (!user) {
@@ -75,10 +76,24 @@ userRouter.post("/signin", async function () {
     token: token,
   });
 });
-userRouter.get("/purchases", function () {
+
+userRouter.get("/purchases", usermiddleware, async function (req, res) {
+  const userId = req.userId;
+
+  const purchases = await purchaseModel.find({
+    userId,
+  });
+
+  const coursesData = await contentModel.find({
+    _id: { $in: purchases.map((x) => x.courseId) },
+  });
+
   res.json({
-    messsage: "purchases",
+    purchases,
+    coursesData,
   });
 });
 
-module.exports = { userRouter };
+module.exports = {
+  userRouter: userRouter,
+};

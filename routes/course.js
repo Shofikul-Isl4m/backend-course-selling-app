@@ -4,7 +4,7 @@ const { purchaseModel, contentModel } = require("../db");
 
 const courseRouter = Router();
 
-courseRouter.post("/puchase", usermiddleware, async function () {
+courseRouter.post("/purchase", usermiddleware, async function (req, res) {
   const userId = req.userId;
   const courseId = req.body.courseId;
 
@@ -15,10 +15,11 @@ courseRouter.post("/puchase", usermiddleware, async function () {
 
   res.json({
     messsage: "you have successfully bought the course",
+    purchases,
   });
 });
-courseRouter.get("/preview", async function () {
-  const courses = contentModel.find({});
+courseRouter.get("/preview", async function (req, res) {
+  const courses = await contentModel.find({});
 
   res.json({
     courses,

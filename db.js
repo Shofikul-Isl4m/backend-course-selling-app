@@ -1,42 +1,42 @@
-const mongoose = require("express");
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
-const objectId = mongoose.Types.objectId;
+const objectId = mongoose.Types.ObjectId;
 
 const User = new Schema({
-  email: { type: string, unique: true },
-  password: string,
-  firstname: string,
-  lastname: string,
+  email: { type: String, unique: true },
+  password: String,
+  firstname: String,
+  lastname: String,
 });
 
 const Admin = new Schema({
-  email: { type: string, unique: true },
-  password: string,
-  firstname: string,
-  lastname: string,
+  email: { type: String, unique: true },
+  password: String,
+  firstname: String,
+  lastname: String,
 });
 
 const Content = new Schema({
-  title: string,
-  discription: string,
-  imageUrl: string,
+  title: String,
+  discription: String,
+  imageUrl: String,
   price: Number,
   creatorid: objectId,
 });
 
-const purchase = new Schema({
+const Purchase = new Schema({
   userId: objectId,
   courseId: objectId,
 });
 
-const userModel = Schema.model("user", User);
+const userModel = mongoose.model("user", User);
 
-const adminModel = Schema.model("admin", Admin);
+const adminModel = mongoose.model("admin", Admin);
 
-const contentModel = Schema.model("content", Content);
+const contentModel = mongoose.model("content", Content);
 
-const purchaseModel = Schema.model("purchase", Purchase);
+const purchaseModel = mongoose.model("purchase", Purchase);
 
 module.exports = {
   userModel,
